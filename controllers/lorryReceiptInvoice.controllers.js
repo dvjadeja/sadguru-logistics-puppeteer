@@ -1,7 +1,7 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 const hbs = require('handlebars');
-const { handleErrors, handleSuccess } = require('../utils/response.utils');
+const { handleErrors } = require('../utils/response.utils');
 const { LorryReceiptInvoice, LorryReceipt } = require('../models');
 
 const {
@@ -170,12 +170,19 @@ const printLorryReceiptInvoice = async (req, res) => {
 
     const buffer = Buffer.from(pdf.buffer, pdf.byteOffset, pdf.byteLength);
 
-    // res.status(200).send(buffer);
-
-    handleSuccess(res, {
-      message: 'Invoice Downloaded successfully',
-      data: buffer,
+    console.log({
+      responseId: res.locals.responseId,
+      method: res.req.method,
+      url: res.req.originalUrl,
+      query: res.req.query,
     });
+
+    res.status(200).send(buffer);
+
+    // handleSuccess(res, {
+    //   message: 'Invoice Downloaded successfully',
+    //   data: buffer,
+    // });
   } catch (error) {
     handleErrors(req, res, {
       message: 'Error while printing lorry receipt invoice',
@@ -186,5 +193,7 @@ const printLorryReceiptInvoice = async (req, res) => {
     await browser.close();
   }
 };
+
+const printLorryReceiptAnnexure = async (req, res) => {};
 
 module.exports = { printLorryReceiptInvoice };

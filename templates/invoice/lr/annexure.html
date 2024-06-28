@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet" />
+
+
+    <title>Lorry Receipt Invoice - Annexure</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        p {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            margin: 0;
+        }
+
+        .bt-1 {
+            border-top: 1px solid #000;
+        }
+
+        .bb-1 {
+            border-bottom: 1px solid #000;
+        }
+
+        .bl-1 {
+            border-left: 1px solid #000;
+        }
+
+        .br-1 {
+            border-right: 1px solid #000;
+        }
+
+        .container {
+            box-sizing: border-box;
+            border: 2px solid #000;
+            width: 210mm;
+            min-height: 294mm;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 10px;
+            padding: 1rem 1rem 0rem 1rem;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .img-container {
+            width: 74px;
+            height: 74px;
+            object-fit: contain;
+            position: absolute;
+            border-radius: 10px;
+        }
+
+        .logo {
+            width: 100%;
+            height: 100%;
+            border-radius: 10px;
+        }
+
+        .company-details {
+            flex: 1;
+        }
+
+        .company-name {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .company-address {
+            margin-top: 10px;
+            margin-bottom: 10px;
+            text-transform: capitalize;
+        }
+
+        .annexure-title {
+            text-align: center;
+            padding: 0.5rem 0;
+        }
+
+        .table-container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            border: 1px solid #000;
+            border-right: 0px;
+            border-left: 0px;
+        }
+
+        th,
+        td {
+            padding: 3px 5px;
+            text-align: left;
+            font-size: 12px;
+            border: 1px solid #000;
+            text-transform: uppercase;
+        }
+
+        th:first-child {
+            border-left: 0px;
+        }
+
+        td:first-child {
+            border-left: 0px;
+        }
+
+        th:last-child {
+            border-right: 0px;
+        }
+
+        td:last-child {
+            border-right: 0px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="img-container">
+                <img class="logo" src="https://sadguru-survey-dev.s3.ap-south-1.amazonaws.com/SML+Logo.jpg" alt="">
+            </div>
+            <div class="company-details">
+                <h2 class="company-name">SADGURU LOGISTICS PRIVATE LIMITED</h2>
+                <p class="company-address">SADGURU PARK, BANGALORE</p>
+            </div>
+        </div>
+
+        <!-- Annexure Title -->
+        <div class="annexure-title bt-1">
+            <h5>ANNEXURE</h5>
+        </div>
+
+        <!-- Table Container -->
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sr. No.</th>
+                        <th>Date</th>
+                        <th>Container No</th>
+                        <th>Size</th>
+                        <th>Truck No.</th>
+                        <th>From</th>
+                        <th>To</th>
+                        <th>Rate</th>
+                        <th>Detention</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>01-06-2024</td>
+                        <td>CAIU3497549</td>
+                        <td>40</td>
+                        <td>GJ12FC6601</td>
+                        <td>Mundra</td>
+                        <td>Gandhidham</td>
+                        <td>10,700</td>
+                        <td>2,500</td>
+                        <td>11,950</td>
+                    </tr>
+                    <!-- {{#each content}}
+                    <tr>
+                        <td>{{srNo}}</td>
+                        <td>{{date}}</td>
+                        <td>{{containerNo}}</td>
+                        <td>{{size}}</td>
+                        <td>{{truckNo}}</td>
+                        <td>{{from}}</td>
+                        <td>{{to}}</td>
+                        <td>{{rate}}</td>
+                        <td>{{detentionCharges}}</td>
+                        <td>{{total}}</td>
+                    </tr>
+                    {{/each}} -->
+
+                    <!-- tr for total -->
+                    <tr>
+                        <td colspan="7">Total</td>
+                        <td>11,950</td>
+                        <td>2,500</td>
+                        <td>11,950</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+
+</html>
