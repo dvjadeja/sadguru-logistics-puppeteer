@@ -146,11 +146,11 @@
         <!-- Header -->
         <div class="header">
             <div class="img-container">
-                <img class="logo" src="https://sadguru-survey-dev.s3.ap-south-1.amazonaws.com/SML+Logo.jpg" alt="">
+                <img class="logo" src="{{logo}}" alt="logo">
             </div>
             <div class="company-details">
-                <h2 class="company-name">SADGURU LOGISTICS PRIVATE LIMITED</h2>
-                <p class="company-address">SADGURU PARK, BANGALORE</p>
+                <h2 class="company-name">{{companyName}}</h2>
+                <p class="company-address">{{address}}</p>
             </div>
         </div>
 
@@ -177,7 +177,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
+                    <!-- <tr>
                         <td>1</td>
                         <td>01-06-2024</td>
                         <td>CAIU3497549</td>
@@ -188,28 +188,28 @@
                         <td>10,700</td>
                         <td>2,500</td>
                         <td>11,950</td>
-                    </tr>
-                    <!-- {{#each content}}
+                    </tr> -->
+                    {{#each content}}
                     <tr>
                         <td>{{srNo}}</td>
-                        <td>{{date}}</td>
+                        <td>{{lrDate}}</td>
                         <td>{{containerNo}}</td>
-                        <td>{{size}}</td>
-                        <td>{{truckNo}}</td>
+                        <td>{{containerSize}}</td>
+                        <td>{{vehicleNo}}</td>
                         <td>{{from}}</td>
                         <td>{{to}}</td>
                         <td>{{rate}}</td>
-                        <td>{{detentionCharges}}</td>
+                        <td>{{detentionAmount}}</td>
                         <td>{{total}}</td>
                     </tr>
-                    {{/each}} -->
+                    {{/each}}
 
                     <!-- tr for total -->
                     <tr>
                         <td colspan="7">Total</td>
-                        <td>11,950</td>
-                        <td>2,500</td>
-                        <td>11,950</td>
+                        <td>{{totalRateAmount}}</td>
+                        <td>{{totalDetentionAmount}}</td>
+                        <td>{{totalAmountOfLorryReceipts}}</td>
                     </tr>
                 </tbody>
             </table>
