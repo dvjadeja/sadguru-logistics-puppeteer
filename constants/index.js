@@ -3,4 +3,23 @@ const ROLES = {
   USER: 'USER',
 };
 
-module.exports = { ROLES };
+const VEHICLE_STATUS = {
+  ACTIVE: 'ACTIVE',
+  INACTIVE: 'INACTIVE',
+  UNDER_MAINTENANCE: 'UNDER_MAINTENANCE',
+};
+
+const VEHICLE_TAX_TYPE = {
+  LTT: 'LTT',
+  OTT: 'OTT',
+};
+
+const PAYMENT_TYPE = {
+  CASH: 'CASH',
+  RTGS: 'RTGS',
+  NEFT: 'NEFT',
+  CHEQUE: 'CHEQUE',
+  UPI: 'UPI',
+};
+
+module.exports = { ROLES, VEHICLE_STATUS, VEHICLE_TAX_TYPE, PAYMENT_TYPE };

@@ -1,0 +1,76 @@
+const { model, Schema } = require('mongoose');
+const { VEHICLE_STATUS, VEHICLE_TAX_TYPE } = require('../constants');
+
+const vehicleSchema = new Schema(
+  {
+    make: String,
+    model: String,
+    vin: String,
+    registration: {
+      plateNumber: {
+        type: String,
+        required: true,
+      },
+    },
+    currentStatus: {
+      type: String,
+      enum: [
+        VEHICLE_STATUS.ACTIVE,
+        VEHICLE_STATUS.INACTIVE,
+        VEHICLE_STATUS.UNDER_MAINTENANCE,
+      ],
+      default: VEHICLE_STATUS.ACTIVE,
+    },
+    fuel: {
+      fuelCapacity: Number,
+      availableFuel: Number,
+    },
+    insuranceExpirationDate: {
+      type: Date,
+      required: true,
+    },
+    registrationDate: {
+      type: Date,
+      required: true,
+    },
+    fitness: {
+      type: Date,
+      required: true,
+    },
+    tax: {
+      taxType: {
+        type: String,
+        enum: [VEHICLE_TAX_TYPE.LTT, VEHICLE_TAX_TYPE.OTT],
+        required: true,
+      },
+      lastTaxDate: Date,
+    },
+    puc: {
+      type: Date,
+      required: true,
+    },
+    permit: {
+      type: Date,
+      required: true,
+    },
+    assignedDriver: {
+      type: Schema.Types.ObjectId,
+      ref: 'Driver',
+    },
+    pucLink: String,
+    rcLink: String,
+    permitLink: String,
+    insuranceLink: String,
+    taxLink: String,
+    fitnessLink: String,
+    createdBy: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+    },
+  },
+  { timestamps: true }
+);
+
+const VehicleModel = model('Vehicle', vehicleSchema);
+
+module.exports = VehicleModel;

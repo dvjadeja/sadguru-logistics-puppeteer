@@ -1,6 +1,6 @@
 const { verifyToken } = require('../utils/auth.utils');
 const { handleErrors } = require('../utils/response.utils');
-const Users = require('../models/User.model');
+const { Users } = require('../models');
 
 const isAuthenticated = async (req, res, next) => {
   const auth = req.headers.authorization;
