@@ -32,7 +32,7 @@ const printLorryReceiptInvoice = async (req, res) => {
   });
 
   try {
-    const { userId, company } = res.locals.user;
+    const { userId, company, bankDetails } = res.locals.user;
     const { invoiceId } = req.query;
 
     if (!invoiceId) throw new Error('Invoice not found');
@@ -111,11 +111,22 @@ const printLorryReceiptInvoice = async (req, res) => {
     );
     const companyPan = company?.pan;
     const companyGstin = company?.gst;
-    const companyBankAccHolderName = company?.bankDetails?.accountHolderName;
-    const companyBankAccNumber = company?.bankDetails?.accountNumber;
-    const companyBankName = company?.bankDetails?.bankName;
-    const companyIfscCode = company?.bankDetails?.ifscCode;
-    const companyBranch = company?.bankDetails?.branch;
+    const companyBankAccHolderName = lorryReceiptInvoice?.ownOrganization
+      ? bankDetails?.accountHolderName
+      : lorryReceiptInvoice?.organizationDetails?.bankDetails
+          ?.accountHolderName;
+    const companyBankAccNumber = lorryReceiptInvoice?.ownOrganization
+      ? bankDetails?.accountNumber
+      : lorryReceiptInvoice?.organizationDetails?.bankDetails?.accountNumber;
+    const companyBankName = lorryReceiptInvoice?.ownOrganization
+      ? bankDetails?.bankName
+      : lorryReceiptInvoice?.organizationDetails?.bankDetails?.bankName;
+    const companyIfscCode = lorryReceiptInvoice?.ownOrganization
+      ? bankDetails?.ifscCode
+      : lorryReceiptInvoice?.organizationDetails?.bankDetails?.ifscCode;
+    const companyBranch = lorryReceiptInvoice?.ownOrganization
+      ? bankDetails?.branch
+      : lorryReceiptInvoice?.organizationDetails?.bankDetails?.branch;
     const logo = lorryReceiptInvoice?.ownOrganization
       ? company?.logo
       : lorryReceiptInvoice?.organizationDetails?.logo;
@@ -149,6 +160,8 @@ const printLorryReceiptInvoice = async (req, res) => {
       content: newTransformedData || [],
     };
 
+    console.log('payloadData', payloadData);
+
     const htmlToSend = template(payloadData);
 
     const page = await browser.newPage();
@@ -175,6 +188,7 @@ const printLorryReceiptInvoice = async (req, res) => {
       method: res.req.method,
       url: res.req.originalUrl,
       query: res.req.query,
+      user: userId,
     });
 
     res.status(200).send(buffer);
