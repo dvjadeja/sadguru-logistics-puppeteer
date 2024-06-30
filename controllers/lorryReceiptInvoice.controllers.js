@@ -160,8 +160,6 @@ const printLorryReceiptInvoice = async (req, res) => {
       content: newTransformedData || [],
     };
 
-    console.log('payloadData', payloadData);
-
     const htmlToSend = template(payloadData);
 
     const page = await browser.newPage();
