@@ -73,15 +73,15 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
             border: 1px solid #000;
             border-right: 0px;
             border-left: 0px;
+            border-bottom: 0px;
         }
 
         th,
         td {
-            padding: 8px;
+            padding: 5px;
             text-align: left;
             font-size: 12px;
             border: 1px solid #000;
@@ -101,6 +101,7 @@
 
         td:last-child {
             border-right: 0px;
+            border-bottom: 0px;
         }
 
         p {
@@ -121,6 +122,11 @@
             align-items: center;
         }
 
+        .total-amount:last-child {
+            margin-bottom: 0px;
+            border-bottom: 0px;
+        }
+
         .bt-1 {
             border-top: 1px solid #000;
         }
@@ -128,12 +134,6 @@
         .b-0 {
             border: none;
             border: 0px;
-        }
-
-        .bank-details,
-        .signature-stamp {
-            /* margin-bottom: 20px; */
-            margin-top: 20px;
         }
 
         .company-details {
@@ -250,6 +250,10 @@
             padding: 5px;
         }
 
+        .text-center {
+            text-align: center;
+        }
+
         .text-capitalize {
             text-transform: capitalize;
         }
@@ -311,10 +315,10 @@
                 <tbody>
                     {{#each content}}
                     <tr>
-                        <td>{{this.srNo}}</td>
+                        <td class="text-center">{{this.srNo}}</td>
                         <td class="text-capitalize">{{this.description}}</td>
-                        <td>{{this.containerSize}}</td>
-                        <td>{{this.totalItems}}</td>
+                        <td class="text-center">{{this.containerSize}}</td>
+                        <td class="text-center">{{this.totalItems}}</td>
                         <td>{{this.rate}}</td>
                         <td>{{this.amount}}</td>
                     </tr>
@@ -325,14 +329,33 @@
                         <td class="b-0"></td>
                         <td class="b-0"></td>
                         <td class="b-0"></td>
-                        <td class="text-right text-bold">₹{{totalAmount}}</td>
+                        <td class="text-right text-bold">₹{{subTotal}}</td>
                     </tr>
                 </tbody>
             </table>
-            <!-- <div class="total-amount bt-1">
-                <p><strong>Sub Total:</strong></p>
-                <p><strong>₹{{subTotal}}</strong></p>
-            </div> -->
+
+            <div class="bt-1"></div>
+            {{#if isGstApplicable}}
+            <div>
+                <!-- if gstType is SGST-CGST then show the below div -->
+                {{#if isSgstCgst}}
+                <div class="total-amount">
+                    <p><strong>Tax Bifurcation:</strong></p>
+                    <div>
+                        <p>SGST: <strong>₹{{sgstAmount}}</strong></p>
+                        <p>CGST: <strong>₹{{cgstAmount}}</strong></p>
+                    </div>
+                </div>
+                {{else}}
+                <div class="total-amount">
+                    <p><strong>Tax Bifurcation:</strong></p>
+                    <div>
+                        <p>IGST: <strong>₹{{igstAmount}}</strong></p>
+                    </div>
+                </div>
+                {{/if}}
+            </div>
+            {{/if}}
             <div class="total-amount bt-1">
                 <p><strong>Tax Amount:</strong></p>
                 <p><strong>₹{{gstAmount}}</strong></p>
@@ -352,9 +375,7 @@
             <div class="bank-details">
                 <div>
                     <p><strong>E.&O.E.</strong></p>
-                    <p>
-                        PAN: <strong class="text-capitalize">{{companyPan}}</strong>
-                    </p>
+                    <p>PAN: <strong class="text-capitalize">{{companyPan}}</strong></p>
                     <p class="mb-2">
                         GSTIN: <strong class="text-capitalize">{{companyGstin}}</strong>
                     </p>

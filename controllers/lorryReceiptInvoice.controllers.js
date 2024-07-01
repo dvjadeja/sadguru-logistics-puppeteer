@@ -104,6 +104,11 @@ const printLorryReceiptInvoice = async (req, res) => {
     const invoiceDate = constructDate(lorryReceiptInvoice?.invoiceDate);
     const dueDate = constructDate(lorryReceiptInvoice?.dueDate);
     const subTotal = constructAmount(lorryReceiptInvoice?.subTotal);
+    const isGstApplicable = lorryReceiptInvoice?.gstApplicable;
+    const gstType = lorryReceiptInvoice?.gstType;
+    const igstAmount = constructAmount(lorryReceiptInvoice?.gstAmount);
+    const cgstAmount = constructAmount(lorryReceiptInvoice?.gstAmount / 2);
+    const sgstAmount = constructAmount(lorryReceiptInvoice?.gstAmount / 2);
     const gstAmount = constructAmount(lorryReceiptInvoice?.gstAmount);
     const totalAmount = constructAmount(lorryReceiptInvoice?.totalAmount);
     const amountInWords = constructAmountToWords(
@@ -145,6 +150,12 @@ const printLorryReceiptInvoice = async (req, res) => {
       invoiceDate: invoiceDate || '',
       dueDate: dueDate || '',
       subTotal: subTotal || '',
+      isGstApplicable: isGstApplicable,
+      gstType: gstType || '',
+      isSgstCgst: gstType === 'SGST-CGST' ? true : false,
+      igstAmount: igstAmount || 0,
+      cgstAmount: cgstAmount || 0,
+      sgstAmount: sgstAmount || 0,
       gstAmount: gstAmount || 0,
       totalAmount: totalAmount || '',
       amountInWords: amountInWords || '',
