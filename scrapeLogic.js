@@ -2,6 +2,7 @@ const puppeteer = require('puppeteer');
 require('dotenv').config();
 
 const scrapeLogic = async (req, res) => {
+  console.log('🚀 ~ scrapeLogic ~ initiated:');
   // Launch the browser and open a new blank page
   const browser = await puppeteer.launch({
     args: [
@@ -41,7 +42,7 @@ const scrapeLogic = async (req, res) => {
 
     // Print the full title.
     const logStatement = `The title of this blog post is "${fullTitle}".`;
-    console.log(logStatement);
+    console.log("🚀 ~ scrapeLogic ~ logStatement:", logStatement)
 
     res.send(logStatement);
   } catch (error) {

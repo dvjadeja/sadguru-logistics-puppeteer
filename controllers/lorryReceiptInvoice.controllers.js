@@ -274,6 +274,9 @@ const printLorryReceiptAnnexure = async (req, res) => {
         'to',
         'rate',
         'detentionAmount',
+        'bookingNo',
+        'containerStatus',
+        'lorryReceiptId',
       ]
     ).populate('vehicleId', ['registration.plateNumber']);
 
@@ -294,6 +297,9 @@ const printLorryReceiptAnnexure = async (req, res) => {
       const total = constructAmount(
         lorryReceipt?.rate + lorryReceipt?.detentionAmount
       );
+      const bookingNo = lorryReceipt?.bookingNo;
+      const containerStatus = lorryReceipt?.containerStatus;
+      const lorryReceiptId = lorryReceipt?.lorryReceiptId;
 
       return {
         srNo: srNo || '',
@@ -306,6 +312,9 @@ const printLorryReceiptAnnexure = async (req, res) => {
         rate: rate || '',
         detentionAmount: detentionAmount || '',
         total: total || '',
+        bookingNo: bookingNo || '-',
+        containerStatus: containerStatus || '-',
+        lorryReceiptId: lorryReceiptId || '',
       };
     });
 
