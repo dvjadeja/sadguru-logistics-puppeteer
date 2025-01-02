@@ -50,6 +50,10 @@
             border-right: 1px groove #000;
         }
 
+        .fw-600 {
+            font-weight: 600;
+        }
+
         .container {
             box-sizing: border-box;
             border: 1px groove #000;
@@ -212,10 +216,10 @@
 
                     <!-- tr for total -->
                     <tr>
-                        <td colspan="7">Total</td>
-                        <td>{{totalRateAmount}}</td>
-                        <td>{{totalDetentionAmount}}</td>
-                        <td>{{totalAmountOfLorryReceipts}}</td>
+                        <td colspan="10" class="fw-600">Total</td>
+                        <td class="fw-600">{{totalRateAmount}}</td>
+                        <td class="fw-600">{{totalDetentionAmount}}</td>
+                        <td class="fw-600">{{totalAmountOfLorryReceipts}}</td>
                     </tr>
                 </tbody>
             </table>
