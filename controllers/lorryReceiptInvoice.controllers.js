@@ -298,7 +298,8 @@ const printLorryReceiptAnnexure = async (req, res) => {
         lorryReceipt?.rate + lorryReceipt?.detentionAmount
       );
       const bookingNo = lorryReceipt?.bookingNo;
-      const containerStatus = lorryReceipt?.containerStatus;
+      const containerStatus =
+        lorryReceipt?.modeOfTrade === 'EMPTY' ? 'EMPTY' : 'LOADED';
       const lorryReceiptId = lorryReceipt?.lorryReceiptId;
 
       return {
