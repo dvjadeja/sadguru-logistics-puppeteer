@@ -277,6 +277,7 @@ const printLorryReceiptAnnexure = async (req, res) => {
         'bookingNo',
         'containerStatus',
         'lorryReceiptId',
+        'modeOfTrade',
       ]
     ).populate('vehicleId', ['registration.plateNumber']);
 
@@ -301,6 +302,8 @@ const printLorryReceiptAnnexure = async (req, res) => {
       const containerStatus =
         lorryReceipt?.modeOfTrade === 'EMPTY' ? 'EMPTY' : 'LOADED';
       const lorryReceiptId = lorryReceipt?.lorryReceiptId;
+      console.log("🚀 ~ newLorryReceipts ~ lorryReceipt?.modeOfTrade:", lorryReceipt?.modeOfTrade)
+      console.log("🚀 ~ newLorryReceipts ~ containerStatus:", containerStatus)
 
       return {
         srNo: srNo || '',
