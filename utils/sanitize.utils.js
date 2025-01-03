@@ -79,7 +79,7 @@ const transformLrInvoiceData = (data) => {
       resultMap[key].totalItems += 1;
     } else {
       resultMap[key] = {
-        description,
+        description: `${entry.from} to ${entry.to}`,
         containerSize: entry.containerSize,
         rate: entry.rate,
         totalAmount: entry.rate,
@@ -94,7 +94,7 @@ const transformLrInvoiceData = (data) => {
         detentionMap[detentionKey].totalItems += 1;
       } else {
         detentionMap[detentionKey] = {
-          description: `${from} to ${to} (DETENTION)`,
+          description: `${entry.from} to ${entry.to} (DETENTION)`,
           containerSize: entry.containerSize,
           rate: entry.detentionAmount,
           totalAmount: entry.detentionAmount,
