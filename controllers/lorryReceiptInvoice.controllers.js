@@ -13,24 +13,107 @@ const {
   transformLrInvoiceData,
 } = require('../utils/sanitize.utils');
 
-const printLorryReceiptInvoice = async (req, res) => {
-  // Launch the browser and open a new blank page
-  const browser = await puppeteer.launch({
-    headless: true,
-    args: [
-      '--no-sandbox',
-      '--disable-setuid-sandbox',
-      // '--single-process',
-      '--no-zygote',
-      '--disable-gpu',
-      '--disable-dev-shm-usage',
-    ],
-    executablePath:
-      process.env.NODE_ENV === 'production'
-        ? process.env.PUPPETEER_EXECUTABLE_PATH
-        : puppeteer.executablePath(),
-  });
+const PDF_RENDER_OPTIONS = {
+  format: 'A4',
+  printBackground: true,
+  margin: {
+    top: '20px',
+    right: '20px',
+    bottom: '20px',
+    left: '20px',
+  },
+};
 
+const PUPPETEER_LAUNCH_OPTIONS = {
+  headless: true,
+  args: [
+    '--no-sandbox',
+    '--disable-setuid-sandbox',
+    '--no-zygote',
+    '--disable-gpu',
+    '--disable-dev-shm-usage',
+  ],
+  executablePath:
+    process.env.NODE_ENV === 'production'
+      ? process.env.PUPPETEER_EXECUTABLE_PATH
+      : puppeteer.executablePath(),
+};
+
+const templateCache = new Map();
+let browserPromise = null;
+
+const getTemplate = (templatePath) => {
+  if (!templateCache.has(templatePath)) {
+    const templateHtml = fs.readFileSync(templatePath, 'utf-8');
+    templateCache.set(templatePath, hbs.compile(templateHtml));
+  }
+
+  return templateCache.get(templatePath);
+};
+
+const getBrowser = async () => {
+  if (!browserPromise) {
+    browserPromise = puppeteer.launch(PUPPETEER_LAUNCH_OPTIONS);
+  }
+
+  const browser = await browserPromise;
+
+  if (!browser.isConnected()) {
+    browserPromise = puppeteer.launch(PUPPETEER_LAUNCH_OPTIONS);
+    return browserPromise;
+  }
+
+  return browser;
+};
+
+const renderPdf = async (htmlToSend) => {
+  const browser = await getBrowser();
+  const page = await browser.newPage();
+
+  try {
+    await page.setContent(htmlToSend, {
+      waitUntil: 'domcontentloaded',
+    });
+
+    // Ensure external images (logo/stamp) are loaded before printing.
+    try {
+      await page.waitForFunction(
+        () =>
+          Array.from(document.images).every(
+            (img) => !img.src || (img.complete && img.naturalWidth > 0)
+          ),
+        { timeout: 1200 }
+      );
+    } catch (error) {
+      // Keep fast fallback path when some images are slow/unreachable.
+    }
+
+    return await page.pdf(PDF_RENDER_OPTIONS);
+  } finally {
+    await page.close();
+  }
+};
+
+const shutdownBrowser = async () => {
+  if (!browserPromise) return;
+
+  try {
+    const browser = await browserPromise;
+    if (browser?.isConnected()) {
+      await browser.close();
+    }
+  } finally {
+    browserPromise = null;
+  }
+};
+
+process.once('SIGINT', shutdownBrowser);
+process.once('SIGTERM', shutdownBrowser);
+void getBrowser().catch(() => {
+  browserPromise = null;
+});
+
+const printLorryReceiptInvoice = async (req, res) => {
   try {
     const { userId, company, bankDetails } = res.locals.user;
     const { invoiceId } = req.query;
@@ -80,9 +163,7 @@ const printLorryReceiptInvoice = async (req, res) => {
       };
     });
 
-    const html = fs.readFileSync('./templates/invoice/lr/index.html', 'utf-8');
-
-    const template = hbs.compile(html);
+    const template = getTemplate('./templates/invoice/lr/index.html');
 
     const companyName = lorryReceiptInvoice?.ownOrganization
       ? company?.name
@@ -172,25 +253,9 @@ const printLorryReceiptInvoice = async (req, res) => {
     };
 
     const htmlToSend = template(payloadData);
-
-    const page = await browser.newPage();
-
-    await page.setContent(htmlToSend);
-
-    const pdf = await page.pdf({
-      format: 'A4',
-      printBackground: true,
-      margin: {
-        top: '20px',
-        right: '20px',
-        bottom: '20px',
-        left: '20px',
-      },
-    });
+    const pdf = await renderPdf(htmlToSend);
 
     res.setHeader('Content-Type', 'application/pdf');
-
-    const buffer = Buffer.from(pdf.buffer, pdf.byteOffset, pdf.byteLength);
 
     console.log({
       responseId: res.locals.responseId,
@@ -200,7 +265,7 @@ const printLorryReceiptInvoice = async (req, res) => {
       user: userId,
     });
 
-    res.status(200).send(buffer);
+    res.status(200).send(pdf);
 
     // handleSuccess(res, {
     //   message: 'Invoice Downloaded successfully',
@@ -211,30 +276,10 @@ const printLorryReceiptInvoice = async (req, res) => {
       message: 'Error while printing lorry receipt invoice',
       error,
     });
-  } finally {
-    // Close the browser.
-    await browser.close();
   }
 };
 
 const printLorryReceiptAnnexure = async (req, res) => {
-  // Launch the browser and open a new blank page
-  const browser = await puppeteer.launch({
-    headless: true,
-    args: [
-      '--no-sandbox',
-      '--disable-setuid-sandbox',
-      // '--single-process',
-      '--no-zygote',
-      '--disable-gpu',
-      '--disable-dev-shm-usage',
-    ],
-    executablePath:
-      process.env.NODE_ENV === 'production'
-        ? process.env.PUPPETEER_EXECUTABLE_PATH
-        : puppeteer.executablePath(),
-  });
-
   try {
     const { userId, company } = res.locals.user;
     const { invoiceId } = req.query;
@@ -357,33 +402,12 @@ const printLorryReceiptAnnexure = async (req, res) => {
         constructAmount(totalAmountOfLorryReceipts) || '0',
     };
 
-    const html = fs.readFileSync(
-      './templates/invoice/lr/annexure.html',
-      'utf-8'
-    );
-
-    const template = hbs.compile(html);
+    const template = getTemplate('./templates/invoice/lr/annexure.html');
 
     const htmlToSend = template(payloadData);
-
-    const page = await browser.newPage();
-
-    await page.setContent(htmlToSend);
-
-    const pdf = await page.pdf({
-      format: 'A4',
-      printBackground: true,
-      margin: {
-        top: '20px',
-        right: '20px',
-        bottom: '20px',
-        left: '20px',
-      },
-    });
+    const pdf = await renderPdf(htmlToSend);
 
     res.setHeader('Content-Type', 'application/pdf');
-
-    const buffer = Buffer.from(pdf.buffer, pdf.byteOffset, pdf.byteLength);
 
     console.log({
       responseId: res.locals.responseId,
@@ -392,15 +416,12 @@ const printLorryReceiptAnnexure = async (req, res) => {
       query: res.req.query,
     });
 
-    res.status(200).send(buffer);
+    res.status(200).send(pdf);
   } catch (error) {
     handleErrors(req, res, {
       message: 'Error while printing lorry receipt invoice',
       error,
     });
-  } finally {
-    // Close the browser.
-    await browser.close();
   }
 };
 
